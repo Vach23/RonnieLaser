@@ -11,8 +11,8 @@
 
 
 void my_init() {
-	SET_DIR_POSITIVE_X;
-	SET_DIR_POSITIVE_Y;
+	set_dir_positive_x();
+	set_dir_positive_y();
 
 	DISABLE_MOTOR_X;
 	DISABLE_MOTOR_Y;

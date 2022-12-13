@@ -230,7 +230,6 @@ void TIM2_IRQHandler(void)
 	tim2Tick++;
 
 	if (tim2Tick >= 10) {
-		DO_STEP_Y;
 		tim2Tick = 0;
 	}
   /* USER CODE END TIM2_IRQn 1 */

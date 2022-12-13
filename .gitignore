@@ -1,1 +1,5 @@
 *.su
+*.o´
+*.elf
+*.list
+*.map
