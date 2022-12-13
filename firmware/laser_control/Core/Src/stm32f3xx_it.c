@@ -225,6 +225,10 @@ void EXTI9_5_IRQHandler(void)
   */
 void TIM2_IRQHandler(void)
 {
+  /* USER CODE BEGIN TIM2_IRQn 0 */
+	LL_TIM_ClearFlag_CC1(TIM2);
+	tim2Tick++;
+
 	if (tim2Tick >= 10) {
 		DO_STEP_Y;
 		tim2Tick = 0;
