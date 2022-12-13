@@ -1,0 +1,28 @@
+|funkce	|	Ard	|	STM	|Tims?	|used?	| name
+|-------+-------+-------+-------+-------|
+|		|	D0	|	PA3	|		|		|
+|		|	D1	|	PA2	|		|		|
+|X_stp	|	D2	|	PA10|T2_CH4	|	Y	| X_STEP
+|Y_stp	|	D3	|	PB3	|		|		|
+|Z_stp	|	D4	|	PB5	|T17_CH1|	Y	| Z_STEP
+|X_dir	|	D5	|	PB4	|		|	Y	| X_DIR
+|Y_dir	|	D6	|	PB10|		|		|
+|Z_dir	|	D7	|	PA8	|		|	Y	| Z_DIR
+|-------+-------+-------+-------+-------|		
+|ENABLE	|	D8	|	PA9	|		|	Y	| MOTORS_ENABLE
+|X_Lim	|	D9	|	PC7	|		|	Y	| X_END
+|Y_lim	|	D10	|	PB6	|		|	Y	| Y_END
+|Z_lim	|	D11	|	PB15|		|	Y	| Z_END
+|spin_en|	D12	|	PB14|		|	Y	| LASER_ENABLE
+|		|	D13	|	PB13|		|		|
+|-------+-------+-------+-------+-------|
+
+|-------+-------+-------+-------+-------|
+|Abort	|	A0	|	PA0	|		|		|
+|Hold	|	A1	|	PA1	|		|		|
+|Resume	|	A2	|	PA4	|		|		|
+|		|	A3	|	PB0	|		|		|
+|		|	A4	|	PC1	|		|		|
+|		|	A5	|	PC0	|		|		|
+|-------+-------+-------+-------+-------|
+

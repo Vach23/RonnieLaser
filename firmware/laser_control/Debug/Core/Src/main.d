@@ -14,9 +14,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_utils.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_pwr.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h \
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_tim.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_usart.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_gpio.h \
- ../Core/Inc/app.h
+ ../Core/Inc/laser.h ../Core/Inc/motors.h ../Core/Inc/main.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_rcc.h:
 ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f3xx.h:
@@ -33,6 +34,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_utils.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_pwr.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_tim.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_usart.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_gpio.h:
-../Core/Inc/app.h:
+../Core/Inc/laser.h:
+../Core/Inc/motors.h:
+../Core/Inc/main.h:

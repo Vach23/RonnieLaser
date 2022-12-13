@@ -1,4 +1,4 @@
-Core/Src/app.o: ../Core/Src/app.c ../Core/Inc/app.h ../Core/Inc/main.h \
+Core/Src/motors.o: ../Core/Src/motors.c ../Core/Inc/main.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_rcc.h \
  ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f3xx.h \
  ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f302x8.h \
@@ -14,9 +14,10 @@ Core/Src/app.o: ../Core/Src/app.c ../Core/Inc/app.h ../Core/Inc/main.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_utils.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_pwr.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h \
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_tim.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_usart.h \
- ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_gpio.h
-../Core/Inc/app.h:
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_gpio.h \
+ ../Core/Inc/motors.h ../Core/Inc/main.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_rcc.h:
 ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f3xx.h:
@@ -33,5 +34,8 @@ Core/Src/app.o: ../Core/Src/app.c ../Core/Inc/app.h ../Core/Inc/main.h \
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_utils.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_pwr.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_tim.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_usart.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_gpio.h:
+../Core/Inc/motors.h:
+../Core/Inc/main.h:
