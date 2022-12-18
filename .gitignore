@@ -2,6 +2,7 @@
 
 # Něco co tam zbylo a nemělo by:
 *.list
+*.mk
 
 # Prerequisites
 *.d
