@@ -234,11 +234,11 @@ void TIM2_IRQHandler(void) {
 	static int error, e2;
 	static int desired_steps_x = 0, desired_steps_y = 0;
 
-	if ((_steps_x > 700) || (_steps_x < -700)) {
+	if ((_steps_x > (HOMING_STEPS_X-50)) || (_steps_x < -(HOMING_STEPS_X-50))) {
 		return;
 	}
 
-	if ((_steps_y > 700) || (_steps_y < -700)) {
+	if ((_steps_y > (HOMING_STEPS_Y-50)) || (_steps_y < -(HOMING_STEPS_Y-50))) {
 		return;
 	}
 
