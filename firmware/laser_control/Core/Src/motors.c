@@ -21,6 +21,9 @@ int _dir_y = 1;
 bool new_coordinates = false;
 bool finished = true;
 
+int speed = 10;
+int speed2 = 14;
+
 inline void handle_endstop_x() {
 	if (is_homing) {
 		DISABLE_ENDSTOP_X;
@@ -123,7 +126,7 @@ void do_steps_y(uint32_t steps, uint32_t ms_delay) {
 
 
 
-void do_home() {
+void do_home(bool enable) {
 	homed_x = false;
 	homed_y = false;
 	is_homing = true;
@@ -134,17 +137,19 @@ void do_home() {
 	// První allways Y:
 	// Safety steps:
 	set_dir_negative_y();
-	ENABLE_MOTOR_Y;
-	do_steps_y(20, 1);
+	//ENABLE_MOTOR_Y;
+	//do_steps_y(20, 1);
 	do_home_y();
 	// Potom motor X
 	do_home_x();
 
-	is_homing = false;
-	disable_motors();
-
 	_steps_x = 0;
 	_steps_y = 0;
+
+	if (!enable) {
+		disable_motors();
+	}
+	is_homing = false;
 }
 
 

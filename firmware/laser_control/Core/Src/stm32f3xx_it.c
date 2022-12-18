@@ -22,8 +22,8 @@
 #include "stm32f3xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdlib.h>
 #include "motors.h"
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,7 +57,7 @@ uint32_t tim2Tick = 0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern PCD_HandleTypeDef hpcd_USB_FS;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -187,7 +187,7 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
   /* USER CODE END SysTick_IRQn 0 */
-
+  HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */
@@ -199,6 +199,20 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f3xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles CAN RX0 and USB low priority interrupts.
+  */
+void USB_LP_CAN_RX0_IRQHandler(void)
+{
+  /* USER CODE BEGIN USB_LP_CAN_RX0_IRQn 0 */
+
+  /* USER CODE END USB_LP_CAN_RX0_IRQn 0 */
+  HAL_PCD_IRQHandler(&hpcd_USB_FS);
+  /* USER CODE BEGIN USB_LP_CAN_RX0_IRQn 1 */
+
+  /* USER CODE END USB_LP_CAN_RX0_IRQn 1 */
+}
 
 /**
   * @brief This function handles EXTI line[9:5] interrupts.
@@ -224,8 +238,9 @@ void EXTI9_5_IRQHandler(void)
 /**
   * @brief This function handles TIM2 global interrupt.
   */
-void TIM2_IRQHandler(void) {
-	/* USER CODE BEGIN TIM2_IRQn 0 */
+void TIM2_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM2_IRQn 0 */
 	LL_TIM_ClearFlag_CC1(TIM2);
 	tim2Tick++;
 	static bool calculation_done = false;
@@ -244,23 +259,27 @@ void TIM2_IRQHandler(void) {
 
 
 	if (FLAG_X && FLAG_Y) {
-		if (tim2Tick >= 14) {
+		if (tim2Tick >= speed2) {
 			do_step_x();
 			do_step_y();
 			tim2Tick = 0;
+			FLAG_X = false;
+			FLAG_Y = false;
 			calculation_done = false;
 		}
 	} else {
-		if (tim2Tick >= 10) {
-			if(FLAG_X) do_step_x;
-			if(FLAG_Y) do_step_y;
+		if (tim2Tick >= speed) {
+			if(FLAG_X == true) do_step_x();
+			if(FLAG_Y == true) do_step_y();
 			tim2Tick = 0;
+			FLAG_X = false;
+			FLAG_Y = false;
 			calculation_done = false;
 		}
 	}
 
-	/* USER CODE END TIM2_IRQn 0 */
-	/* USER CODE BEGIN TIM2_IRQn 1 */
+  /* USER CODE END TIM2_IRQn 0 */
+  /* USER CODE BEGIN TIM2_IRQn 1 */
 
 	if (calculation_done) {
 		return;
@@ -278,35 +297,38 @@ void TIM2_IRQHandler(void) {
 		//sx = (_steps_x < desired_steps_x) ? 1 : -1;
 		//sy = (_steps_y < desired_steps_y) ? 1 : -1;
 		error = dx + dy;
+		new_coordinates = false;
+		finished = false;
 	}
 
 	if ((_steps_x == desired_steps_x) && (_steps_y == desired_steps_y)) {
 		FLAG_X = false;
 		FLAG_Y = false;
+		finished = true;
 		return;
 	}
 	e2 = 2 * error;
 
-	if (e2 >= dy) {
+	if (e2 >= dy) {/*
 	  if (_steps_x == desired_steps_x) {
 		  return;
-	  }
+	  }*/
 	  error += dy;
 	  //_steps_x += sx;
 	  FLAG_X = true;
 	}
 
-	if (e2 <= dx) {
+	if (e2 <= dx) {/*
 	  if (_steps_y == desired_steps_y) {
 		  return;
-	  }
+	  }*/
 	  error += dx;
 	  //_steps_y += sy;
 	  FLAG_Y = true;
 	}
 
 	calculation_done = true;
-	/* USER CODE END TIM2_IRQn 1 */
+  /* USER CODE END TIM2_IRQn 1 */
 }
 
 /**
