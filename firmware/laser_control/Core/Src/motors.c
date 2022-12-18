@@ -14,8 +14,12 @@ bool is_homing = false;
 
 int _steps_x = 0;
 int _steps_y = 0;
+int new_steps_x = 0;
+int new_steps_y = 0;
 int _dir_x = 1;
 int _dir_y = 1;
+bool new_coordinates = false;
+bool finished = true;
 
 inline void handle_endstop_x() {
 	if (is_homing) {

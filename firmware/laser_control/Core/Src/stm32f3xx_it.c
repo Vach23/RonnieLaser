@@ -22,6 +22,7 @@
 #include "stm32f3xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdlib.h>
 #include "motors.h"
 /* USER CODE END Includes */
 
@@ -223,16 +224,89 @@ void EXTI9_5_IRQHandler(void)
 /**
   * @brief This function handles TIM2 global interrupt.
   */
-void TIM2_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM2_IRQn 0 */
+void TIM2_IRQHandler(void) {
+	/* USER CODE BEGIN TIM2_IRQn 0 */
 	LL_TIM_ClearFlag_CC1(TIM2);
 	tim2Tick++;
+	static bool calculation_done = false;
+	static bool FLAG_X = false, FLAG_Y = false;
+	static int dx, dy;
+	static int error, e2;
+	static int desired_steps_x = 0, desired_steps_y = 0;
 
-	if (tim2Tick >= 10) {
-		tim2Tick = 0;
+	if ((_steps_x > 700) || (_steps_x < -700)) {
+		return;
 	}
-  /* USER CODE END TIM2_IRQn 1 */
+
+	if ((_steps_y > 700) || (_steps_y < -700)) {
+		return;
+	}
+
+
+	if (FLAG_X && FLAG_Y) {
+		if (tim2Tick >= 14) {
+			do_step_x();
+			do_step_y();
+			tim2Tick = 0;
+			calculation_done = false;
+		}
+	} else {
+		if (tim2Tick >= 10) {
+			if(FLAG_X) do_step_x;
+			if(FLAG_Y) do_step_y;
+			tim2Tick = 0;
+			calculation_done = false;
+		}
+	}
+
+	/* USER CODE END TIM2_IRQn 0 */
+	/* USER CODE BEGIN TIM2_IRQn 1 */
+
+	if (calculation_done) {
+		return;
+	}
+
+	if (new_coordinates) {
+		desired_steps_x = new_steps_x;
+		desired_steps_y = new_steps_y;
+		dx = abs(desired_steps_x - _steps_x);
+		dy = -abs(desired_steps_y - _steps_y);
+
+		(_steps_x < desired_steps_x) ? set_dir_positive_x() : set_dir_negative_x();
+		(_steps_y < desired_steps_y) ? set_dir_positive_y() : set_dir_negative_y();
+
+		//sx = (_steps_x < desired_steps_x) ? 1 : -1;
+		//sy = (_steps_y < desired_steps_y) ? 1 : -1;
+		error = dx + dy;
+	}
+
+	if ((_steps_x == desired_steps_x) && (_steps_y == desired_steps_y)) {
+		FLAG_X = false;
+		FLAG_Y = false;
+		return;
+	}
+	e2 = 2 * error;
+
+	if (e2 >= dy) {
+	  if (_steps_x == desired_steps_x) {
+		  return;
+	  }
+	  error += dy;
+	  //_steps_x += sx;
+	  FLAG_X = true;
+	}
+
+	if (e2 <= dx) {
+	  if (_steps_y == desired_steps_y) {
+		  return;
+	  }
+	  error += dx;
+	  //_steps_y += sy;
+	  FLAG_Y = true;
+	}
+
+	calculation_done = true;
+	/* USER CODE END TIM2_IRQn 1 */
 }
 
 /**

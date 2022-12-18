@@ -32,8 +32,12 @@
 
 extern int _steps_x;
 extern int _steps_y;
+extern int new_steps_x;
+extern int new_steps_y;
 extern int _dir_x;
 extern int _dir_y;
+extern bool new_coordinates;
+extern bool finised;
 
 void set_dir_positive_x();
 void set_dir_negative_x();
