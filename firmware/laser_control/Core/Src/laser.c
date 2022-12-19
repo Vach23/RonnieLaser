@@ -12,6 +12,23 @@
 #include <math.h>
 
 #define R 300
+#define RX_BUFF_LEN 8
+
+#pragma pack(1)
+
+union {
+	char rx_buff[RX_BUFF_LEN];
+	struct {
+		char name;
+		int16_t coord_x;
+		int16_t coord_y;
+		int16_t speed;
+		char newline;
+	} rx_data;
+} rx_message;
+
+
+char rx_buffer[RX_BUFF_LEN];
 
 void my_init() {
 	set_dir_positive_x();
@@ -35,6 +52,7 @@ void my_init() {
 
 
 	//test();
+	/*
 	do_home(true);
 
 	srand(4564);
@@ -42,25 +60,50 @@ void my_init() {
 		LL_TIM_EnableCounter(TIM2);
 		LL_GPIO_SetOutputPin(LASER_ENABLE_GPIO_Port, LASER_ENABLE_Pin);
 	}
+	*/
+
+	  HAL_UARTEx_ReceiveToIdle_DMA(&huart3, (uint8_t *) rx_buffer, RX_BUFF_LEN);
+	  __HAL_DMA_DISABLE_IT(&hdma_usart3_rx, DMA_IT_HT);
 }
 
 void my_loop() {
-	/*
-	static float deg = 0.0;
-	deg+=0.1;
-	new_steps_x = (int)(sin(deg)*R);
-	new_steps_y = (int)(cos(deg)*R);
-	*/
+	  if (rx_ready) {
+		  HAL_UARTEx_ReceiveToIdle_DMA(&huart3, (uint8_t *) rx_buffer, RX_BUFF_LEN);
+		  __HAL_DMA_DISABLE_IT(&hdma_usart3_rx, DMA_IT_HT);
+		  if (rx_buffer[7] == '\n'){
+			  memcpy(rx_message.rx_buff, rx_buffer, RX_BUFF_LEN);
+			  process_rx_data();
+		  }
+		  rx_ready = false;
+	  }
+}
 
-
-	new_steps_x = rand()%1000-500;
-	new_steps_y = rand()%1000-500;
-	speed = rand()%50+10;
-	speed2 = (int)((float)speed*1.4f);
-
-	new_coordinates = true;
-	while (!finished) {
-		LL_mDelay(1);
+void process_rx_data(){
+	switch (rx_message.rx_data.name) {
+	case 'L':
+		if (rx_message.rx_data.coord_x == 0) {
+			LL_GPIO_SetOutputPin(LASER_ENABLE_GPIO_Port, LASER_ENABLE_Pin);
+			break;
+		}
+		LL_GPIO_ResetOutputPin(LASER_ENABLE_GPIO_Port, LASER_ENABLE_Pin);
+		break;
+	case 'H':
+		do_home(true);
+		LL_TIM_EnableCounter(TIM2);
+		break;
+	case 'G':
+		new_steps_x = rx_message.rx_data.coord_x;
+		new_steps_y = rx_message.rx_data.coord_y;
+		new_coordinates = true;
+		break;
+	case 'S':
+		new_steps_x = rx_message.rx_data.coord_x;
+		new_steps_y = rx_message.rx_data.coord_y;
+		speed = rx_message.rx_data.speed;
+		speed2 = (int)((float)speed*1.414f);
+		new_coordinates = true;
+	default:
+		break;
 	}
 }
 

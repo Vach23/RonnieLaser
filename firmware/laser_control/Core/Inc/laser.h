@@ -11,5 +11,6 @@
 
 void my_init();
 void my_loop();
+void process_rx_data();
 
 #endif /* INC_LASER_H_ */

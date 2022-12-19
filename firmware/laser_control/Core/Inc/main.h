@@ -28,7 +28,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f3xx_hal.h"
-
 #include "stm32f3xx_ll_rcc.h"
 #include "stm32f3xx_ll_bus.h"
 #include "stm32f3xx_ll_system.h"
@@ -38,12 +37,13 @@ extern "C" {
 #include "stm32f3xx_ll_pwr.h"
 #include "stm32f3xx_ll_dma.h"
 #include "stm32f3xx_ll_tim.h"
-#include "stm32f3xx_ll_usart.h"
 #include "stm32f3xx_ll_gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include <stdio.h>
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -53,7 +53,9 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+extern UART_HandleTypeDef huart3;
+extern DMA_HandleTypeDef hdma_usart3_rx;
+extern bool rx_ready;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -102,7 +104,6 @@ void Error_Handler(void);
 #define Z_STEP_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
