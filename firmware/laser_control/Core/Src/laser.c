@@ -45,22 +45,9 @@ void my_init() {
 	LL_TIM_CC_EnableChannel(TIM17, LL_TIM_CHANNEL_CH1);
 	LL_TIM_EnableAllOutputs(TIM17);
 
-	//ENABLE_MOTOR_Y;
+	//ENABLE_MOTION_CONTROL
 	LL_TIM_SetCounter(TIM2, 0);
 	LL_TIM_EnableIT_CC1(TIM2);
-	//LL_TIM_EnableCounter(TIM2);
-
-
-	//test();
-	/*
-	do_home(true);
-
-	srand(4564);
-	if (IS_HOMED) {
-		LL_TIM_EnableCounter(TIM2);
-		LL_GPIO_SetOutputPin(LASER_ENABLE_GPIO_Port, LASER_ENABLE_Pin);
-	}
-	*/
 
 	  HAL_UARTEx_ReceiveToIdle_DMA(&huart3, (uint8_t *) rx_buffer, RX_BUFF_LEN);
 	  __HAL_DMA_DISABLE_IT(&hdma_usart3_rx, DMA_IT_HT);
@@ -102,6 +89,19 @@ void process_rx_data(){
 		speed = rx_message.rx_data.speed;
 		speed2 = (int)((float)speed*1.414f);
 		new_coordinates = true;
+	case 'M':
+		if (rx_message.rx_data.coord_x == 0) {
+			ENABLE_MOTOR_X;
+			ENABLE_MOTOR_Y;
+			homed_x = false;
+			homed_y = false;
+			break;
+		}
+		DISABLE_MOTOR_X;
+		DISABLE_MOTOR_Y;
+		homed_x = false;
+		homed_y = false;
+		break;
 	default:
 		break;
 	}

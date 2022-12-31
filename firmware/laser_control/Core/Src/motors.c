@@ -32,7 +32,6 @@ inline void handle_endstop_x() {
 }
 
 inline void handle_endstop_y() {
-	//DO_STEP_Y;
 	if (is_homing) {
 		DISABLE_ENDSTOP_Y;
 		homed_y = true;
@@ -127,20 +126,17 @@ void do_steps_y(uint32_t steps, uint32_t ms_delay) {
 
 
 void do_home(bool enable) {
+	DISABLE_MOTION_CONTROL
 	homed_x = false;
 	homed_y = false;
 	is_homing = true;
 
 	disable_motors();
+
 	DISABLE_ENDSTOP_Y;
 	DISABLE_ENDSTOP_X;
-	// První allways Y:
-	// Safety steps:
-	set_dir_negative_y();
-	//ENABLE_MOTOR_Y;
-	//do_steps_y(20, 1);
+
 	do_home_y();
-	// Potom motor X
 	do_home_x();
 
 	_steps_x = 0;
@@ -150,6 +146,11 @@ void do_home(bool enable) {
 		disable_motors();
 	}
 	is_homing = false;
+	new_steps_x = 0;
+	new_steps_y = 0;
+	new_coordinates = true;
+
+	ENABLE_MOTION_CONTROL
 }
 
 

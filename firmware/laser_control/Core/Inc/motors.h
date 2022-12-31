@@ -17,23 +17,22 @@
 #define ENABLE_MOTOR_Y LL_GPIO_ResetOutputPin(Z_ENABLE_GPIO_Port, Z_ENABLE_Pin)
 #define DISABLE_MOTOR_Y LL_GPIO_SetOutputPin(Z_ENABLE_GPIO_Port, Z_ENABLE_Pin)
 
-
 #define ENABLE_ENDSTOP_X LL_EXTI_EnableIT_0_31(LL_EXTI_LINE_7);
 #define DISABLE_ENDSTOP_X LL_EXTI_DisableIT_0_31(LL_EXTI_LINE_7);
 #define ENABLE_ENDSTOP_Y LL_EXTI_EnableIT_0_31(LL_EXTI_LINE_15);
 #define DISABLE_ENDSTOP_Y LL_EXTI_DisableIT_0_31(LL_EXTI_LINE_15);
 
+#define IS_HOMED (homed_x && homed_y)
+
+#define ENABLE_MOTION_CONTROL LL_TIM_EnableCounter(TIM2);
+#define DISABLE_MOTION_CONTROL LL_TIM_DisableCounter(TIM2);
 
 // Definitions:
-
 #define HOMING_STEPS_X 750
 #define HOMING_STEPS_Y 700
 
-
 extern bool homed_x;
 extern bool homed_y;
-
-#define IS_HOMED (homed_x && homed_y)
 
 extern int _steps_x;
 extern int _steps_y;

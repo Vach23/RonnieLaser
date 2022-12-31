@@ -43,7 +43,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-uint32_t tim2Tick = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -240,13 +239,16 @@ void EXTI9_5_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
-	LL_TIM_ClearFlag_CC1(TIM2);
-	tim2Tick++;
+	static uint16_t tim2Tick = 0;
+	static int step_time_gap = 10;
 	static bool calculation_done = false;
 	static bool FLAG_X = false, FLAG_Y = false;
 	static int dx, dy;
 	static int error, e2;
-	static int desired_steps_x = 0, desired_steps_y = 0;
+	static int desired_steps_x, desired_steps_y;
+
+	LL_TIM_ClearFlag_CC1(TIM2);
+	tim2Tick++;
 
 	if ((_steps_x > (HOMING_STEPS_X-50)) || (_steps_x < -(HOMING_STEPS_X-50))) {
 		return;
@@ -257,44 +259,30 @@ void TIM2_IRQHandler(void)
 	}
 
 
-	if (FLAG_X && FLAG_Y) {
-		if (tim2Tick >= speed2) {
-			do_step_x();
-			do_step_y();
-			tim2Tick = 0;
-			FLAG_X = false;
-			FLAG_Y = false;
-			calculation_done = false;
-		}
-	} else {
-		if (tim2Tick >= speed) {
-			if(FLAG_X == true) do_step_x();
-			if(FLAG_Y == true) do_step_y();
-			tim2Tick = 0;
-			FLAG_X = false;
-			FLAG_Y = false;
-			calculation_done = false;
-		}
+	step_time_gap = (FLAG_X && FLAG_Y) ? speed2 : speed;
+	if (tim2Tick >= step_time_gap) {
+		if(FLAG_X == true) do_step_x();
+		if(FLAG_Y == true) do_step_y();
+		tim2Tick = 0;
+		FLAG_X = false;
+		FLAG_Y = false;
+		calculation_done = false;
+	}
+
+	if (calculation_done || !homed_x || !homed_y) {
+		return;
 	}
 
   /* USER CODE END TIM2_IRQn 0 */
   /* USER CODE BEGIN TIM2_IRQn 1 */
-
-	if (calculation_done) {
-		return;
-	}
 
 	if (new_coordinates) {
 		desired_steps_x = new_steps_x;
 		desired_steps_y = new_steps_y;
 		dx = abs(desired_steps_x - _steps_x);
 		dy = -abs(desired_steps_y - _steps_y);
-
 		(_steps_x < desired_steps_x) ? set_dir_positive_x() : set_dir_negative_x();
 		(_steps_y < desired_steps_y) ? set_dir_positive_y() : set_dir_negative_y();
-
-		//sx = (_steps_x < desired_steps_x) ? 1 : -1;
-		//sy = (_steps_y < desired_steps_y) ? 1 : -1;
 		error = dx + dy;
 		new_coordinates = false;
 		finished = false;
@@ -306,23 +294,16 @@ void TIM2_IRQHandler(void)
 		finished = true;
 		return;
 	}
+
 	e2 = 2 * error;
 
-	if (e2 >= dy) {/*
-	  if (_steps_x == desired_steps_x) {
-		  return;
-	  }*/
+	if (e2 >= dy) {
 	  error += dy;
-	  //_steps_x += sx;
 	  FLAG_X = true;
 	}
 
-	if (e2 <= dx) {/*
-	  if (_steps_y == desired_steps_y) {
-		  return;
-	  }*/
+	if (e2 <= dx) {
 	  error += dx;
-	  //_steps_y += sy;
 	  FLAG_Y = true;
 	}
 
@@ -350,9 +331,6 @@ void EXTI15_10_IRQHandler(void)
     LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_15);
     /* USER CODE BEGIN LL_EXTI_LINE_15 */
     handle_endstop_y();
-	//LL_EXTI_DisableIT_0_31(LL_EXTI_LINE_15);
-    // Z_END
-    //LL_GPIO_TogglePin(LASER_ENABLE_GPIO_Port, LASER_ENABLE_Pin);
     /* USER CODE END LL_EXTI_LINE_15 */
   }
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
